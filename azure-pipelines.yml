@@ -1,0 +1,16 @@
+# We plan to execute manually for tutorial purposes
+trigger: none
+# for production projects, the recommended trigger is peridical, once a week
+
+pool:
+  vmImage: Canonical:0001-com-ubuntu-confidential-vm-focal:20_04-lts-gen2:latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo "Dumping environment"
+    env | sort
+    echo "End nvironment dump"
+  displayName: 'Run a multi-line script'
