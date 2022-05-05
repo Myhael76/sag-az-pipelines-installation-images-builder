@@ -7,6 +7,7 @@ Use Azure Pipelines to build the product and fix images of chosen SUIF templates
   - [Plan](#plan)
   - [Steps to Setup your DevOps Project](#steps-to-setup-your-devops-project)
     - [Setup Azure Cloud Resources](#setup-azure-cloud-resources)
+    - [Create a New DevOps Project](#create-a-new-devops-project)
 
 ## Prerequisites
 
@@ -30,3 +31,18 @@ On the Azure Dev project, the user will keep the Empower credentials as a secure
 ### Setup Azure Cloud Resources
 
 Execute the scripts from the [prerequisites project](https://github.com/Myhael76/sag-builder-az-prerequisites).
+
+### Create a New DevOps Project
+
+Version control is `Git`, Work item process `basic`.
+
+- Go to Project Settings -> Service Connection and add a new connection to your GitHub Account
+- Go to Project Settings -> GitHub Connections and add a new connection to your GitHub configured service, allowing Azure to interact with your project(s) of choice
+- Go to Project Settings -> Service Connection and add a new connection to your subscription that will hold the pipeline agents
+  - Type is Azure Resource Manager
+  - Mind the permissions your company is granting
+  - When using a service principal manually, use the GUId as id, not the name
+- Create a VM scale set in your subscription
+  - [Why VMSS?](https://dev.to/n3wt0n/everything-about-the-azure-pipelines-scale-set-agents-vmss-cp2?msclkid=5c9e876ca94311ec9e2dbb940011c680)
+    - because building wm images may require more resources and we do not want to be on the internet.
+  - note: [agents in containers](https://www.youtube.com/watch?v=rO-VKProMp8&ab_channel=CoderDave)
