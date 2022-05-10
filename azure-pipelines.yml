@@ -3,6 +3,7 @@ trigger: none
 # for production projects, the recommended trigger is peridical, once a week
 
 pool:
+  name: GCC_MIUN_VMSS
   vmImage: Canonical:0001-com-ubuntu-confidential-vm-focal:20_04-lts-gen2:latest
 
 steps:
