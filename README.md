@@ -8,6 +8,8 @@ Use Azure Pipelines to build the product and fix images of chosen SUIF templates
   - [Steps to Setup your DevOps Project](#steps-to-setup-your-devops-project)
     - [Setup Azure Cloud Resources](#setup-azure-cloud-resources)
     - [Create a New DevOps Project](#create-a-new-devops-project)
+    - [Create an Agent Pool Using the Created VMSS](#create-an-agent-pool-using-the-created-vmss)
+    - [Create a New Pipeline](#create-a-new-pipeline)
 
 ## Prerequisites
 
@@ -30,7 +32,9 @@ On the Azure Dev project, the user will keep the Empower credentials as a secure
 
 ### Setup Azure Cloud Resources
 
-Execute the scripts from the [prerequisites project](https://github.com/Myhael76/sag-builder-az-prerequisites).
+- Execute the scripts from the [prerequisites project](https://github.com/Myhael76/sag-builder-az-prerequisites).
+- Ensure your principal has `Contributor` role to the used subscription
+  - TODO: Research the minimum permissions requirements
 
 ### Create a New DevOps Project
 
@@ -42,7 +46,20 @@ Version control is `Git`, Work item process `basic`.
   - Type is Azure Resource Manager
   - Mind the permissions your company is granting
   - When using a service principal manually, use the GUId as id, not the name
+  - Enable the check "Grant access permission to all pipelines"
 - Create a VM scale set in your subscription
   - [Why VMSS?](https://dev.to/n3wt0n/everything-about-the-azure-pipelines-scale-set-agents-vmss-cp2?msclkid=5c9e876ca94311ec9e2dbb940011c680)
     - because building wm images may require more resources and we do not want to be on the internet.
   - note: [agents in containers](https://www.youtube.com/watch?v=rO-VKProMp8&ab_channel=CoderDave)
+
+### Create an Agent Pool Using the Created VMSS
+
+- Go to Project Settings -> Agent Pools
+- Add Pool -> New -> Type = Azure virtual machine scale set
+- Select your Azure subscription and click Authorize
+
+### Create a New Pipeline
+
+- Choose GitHub
+- Choose this project (or a clone)
+- (To verify) the yaml should appear automatically.
