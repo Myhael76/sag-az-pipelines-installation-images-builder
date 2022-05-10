@@ -12,5 +12,6 @@ steps:
     env | sort
     echo "End nvironment dump"
     echo "Running a repository script"
+    chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
     ${BUILD_SOURCESDIRECTORY}/scripts/buildSagImages.sh
   displayName: 'Run a multi-line script'
