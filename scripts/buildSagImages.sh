@@ -11,8 +11,8 @@ crtDay=$(date +%y-%m-%d)
 wd=/tmp/work_$d # our work directory
 sd=/tmp/share   # share directory - images
 binDir="$sd/bin"
-installerBin="$binDir/installer.bin"
-sumBootstratpBin="$binDir/sum-bootstrap.bin"
+installerSharedBin="$binDir/installer.bin"
+sumBootstrapSharedBin="$binDir/sum-bootstrap.bin"
 
 # exports for current job
 exports(){
@@ -68,25 +68,25 @@ if [ -z ${SAG_AZ_SA_NAME+x} ]; then
 fi
 
 mountImagesShare(){
-  logI "mounting the given file share"
-  mkdir -p $binDir $wd
+  logI "Creating work folder and assuring shared folders (${binDir})"
+  mkdir -p "${binDir}" "$wd"
+  logI "Mounting the given file share"
   sudo mount -t cifs "$AZ_SMB_PATH" "$sd" -o "vers=3.0,username=$SAG_AZ_SA_NAME,password=$AZ_SM_SHARE_KEY,dir_mode=0777,file_mode=0777"
   logI "Images share mounted, result $?"
   mkdir -p "$sd/sessions/$crtDay"
 }
 mountImagesShare
 
-
 assureBinaries(){
-  if [ -f "${installerBin}" ]; then
+  if [ -f "${installerSharedBin}" ]; then
     logI "Copying installer binary from the share"
-    cp "${installerBin}" "${SUIF_INSTALL_INSTALLER_BIN}"
+    cp "${installerSharedBin}" "${SUIF_INSTALL_INSTALLER_BIN}"
     logI "Installer binary copied"
   else
     logI "Downloading default SUIF installer binary"
     assureDefaultInstaller
     logI "Copying installer binary to the share"
-    cp "${SUIF_INSTALL_INSTALLER_BIN}" "${installerBin}"
+    cp "${SUIF_INSTALL_INSTALLER_BIN}" "${installerSharedBin}"
     logI "Installer binary copied"
   fi
 }
