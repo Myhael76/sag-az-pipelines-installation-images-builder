@@ -235,8 +235,8 @@ generateProductsImageFromTemplate(){
   local lVolatileScriptFile="/dev/shm/SUIF/setup/templates/${1}/createProductImage.wmscript"
   mkdir -p "/dev/shm/SUIF/setup/templates/${1}/"
   cp "${lPermanentScriptFile}" "${lVolatileScriptFile}"
-  #echo "Username=${SUIF_EMPOWER_USER}" >> "${lVolatileScriptFile}"
-  #echo "Password=${SUIF_EMPOWER_PASSWORD}" >> "${lVolatileScriptFile}"
+  echo "Username=${SUIF_EMPOWER_USER}" >> "${lVolatileScriptFile}"
+  echo "Password=${SUIF_EMPOWER_PASSWORD//\\/\\\\}" >> "${lVolatileScriptFile}"
   logI "Volatile script created."
   ## TODO: check if error management enforcement is needed: what if the grep produced nothing?
 
@@ -251,12 +251,8 @@ generateProductsImageFromTemplate(){
   #explictly tell installer we are running unattended
   lCmd="${lCmd} -scriptErrorInteract no"
 
-  # TODO: these are new options documented for creating docker images from installer
-  lCmd="${lCmd} --username ${SUIF_EMPOWER_USER}"
-  lCmd="${lCmd} --password"
-
   logI "Creating the product image ${lProductsImageFile}... "
-  logD "Command is ${lCmd} ***"
+  logD "Command is ${lCmd}"
   lCmd="${lCmd} '${SUIF_EMPOWER_PASSWORD}'"
   controlledExec "${lCmd}" "Create-products-image-for-template-${1//\//-}"
   resultCreateImage=$?
