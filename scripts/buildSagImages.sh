@@ -34,9 +34,11 @@ wd=/tmp/work_$d
 
 mkdir -p /tmp/share $wd
 
-sudo mount -t cifs $AZ_SMB_PATH /tmp/share -o username=$SAG_AZ_SA_NAME,password=$AZ_SM_SHARE_KEY,serverino
+sudo mount -t cifs "$AZ_SMB_PATH" /tmp/share -o "username=$SAG_AZ_SA_NAME,password=$AZ_SM_SHARE_KEY,serverino"
 
 echo "Mounted"
+
+ls -lrt /mnt/share/*
 
 echo "Test 1" > $wd/session.log
 
