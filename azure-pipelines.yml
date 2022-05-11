@@ -7,6 +7,13 @@ pool:
   vmImage: Canonical:0001-com-ubuntu-confidential-vm-focal:20_04-lts-gen2:latest
 
 steps:
+
+- task: DownloadSecureFile@1
+  name: secureInfo
+  displayName: 'Download secure information'
+  inputs:
+    secureFile: 'secure.sh'
+
 - script: |
     echo "Dumping environment"
     env | sort
@@ -14,4 +21,4 @@ steps:
     echo "Running a repository script"
     chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
     ${BUILD_SOURCESDIRECTORY}/scripts/buildSagImages.sh
-  displayName: 'Run a multi-line script'
+  displayName: 'Generate Software AG image files'

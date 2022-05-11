@@ -9,6 +9,7 @@ Use Azure Pipelines to build the product and fix images of chosen SUIF templates
     - [Setup Azure Cloud Resources](#setup-azure-cloud-resources)
     - [Create a New DevOps Project](#create-a-new-devops-project)
     - [Create an Agent Pool Using the Created VMSS](#create-an-agent-pool-using-the-created-vmss)
+    - [Upload Secure Values by the means of a Secure File](#upload-secure-values-by-the-means-of-a-secure-file)
     - [Create a New Pipeline](#create-a-new-pipeline)
 
 ## Prerequisites
@@ -58,8 +59,16 @@ Version control is `Git`, Work item process `basic`.
 - Add Pool -> New -> Type = Azure virtual machine scale set
 - Select your Azure subscription and click Authorize
 
+### Upload Secure Values by the means of a Secure File
+
+- Copy `example.secure.sh` to `secure.sh`
+- Change the values according to your specific situation
+- In the "Pipelines" section of your DevOps project, go to "Library"
+- Select "Secure files" and upload `secure.sh`
+- Grant permission to the pipeline
+
 ### Create a New Pipeline
 
 - Choose GitHub
 - Choose this project (or a clone)
-- (To verify) the yaml should appear automatically.
+- The yaml should appear automatically.
