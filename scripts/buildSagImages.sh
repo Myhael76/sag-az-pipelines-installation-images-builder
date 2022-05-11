@@ -68,12 +68,11 @@ if [ -z ${SAG_AZ_SA_NAME+x} ]; then
 fi
 
 mountImagesShare(){
-  logI "Creating work folder and assuring shared folders (${binDir})"
-  mkdir -p "${binDir}" "$wd"
   logI "Mounting the given file share"
   sudo mount -t cifs "$AZ_SMB_PATH" "$sd" -o "vers=3.0,username=$SAG_AZ_SA_NAME,password=$AZ_SM_SHARE_KEY,dir_mode=0777,file_mode=0777"
   logI "Images share mounted, result $?"
-  mkdir -p "$sd/sessions/$crtDay"
+  logI "Creating work folder and assuring shared folders (${binDir})"
+  mkdir -p "${binDir}" "$wd" "$sd/sessions/$crtDay"
 }
 mountImagesShare
 
