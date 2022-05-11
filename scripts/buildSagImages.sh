@@ -15,7 +15,7 @@ sd=/tmp/share   # share directory - images
 export SUIF_FIXES_DATE_TAG="$crtDay"
 
 getSUIF(){
-  export SUIF_HOME=/tmp/SUIF
+  export SUIF_HOME=/tmp/SUIF/sag-unattented-installations
   export SUIF_AUDIT_BASE_DIR=/tmp/SUIF_AUDIT
   mkdir -p "${SUIF_HOME}" "${SUIF_AUDIT_BASE_DIR}"
   pushd .
