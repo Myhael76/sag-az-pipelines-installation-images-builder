@@ -9,15 +9,22 @@ env | sort
 sudo apt update
 sudo apt install cifs-utils samba-common system-config-samba samba winbind
 
-echo "Secure file is $(SECUREINFO_SECUREFILEPATH)"
+echo "Secure file is ${SECUREINFO_SECUREFILEPATH}"
 
-if [ ! -f "$(SECUREINFO_SECUREFILEPATH)" ]; then
+if [ ! -f "${SECUREINFO_SECUREFILEPATH}" ]; then
   echo "Secure file path not present"
+  exit 1
 fi
 
 echo "Sourcing secure information..."
 
-. "$(SECUREINFO_SECUREFILEPATH)"
+chmod u+x "${SECUREINFO_SECUREFILEPATH}"
+. "${SECUREINFO_SECUREFILEPATH}"
+
+if [ -z ${SAG_AZ_SA_NAME+x} ]; then
+  echo "Secure information has not been sourced correctly"
+  exit 2
+fi
 
 echo "mounting the given file share"
 d=$(date +%y-%m-%dT%H.%M.%S_%3N)
