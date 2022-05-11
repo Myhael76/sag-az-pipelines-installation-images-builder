@@ -7,7 +7,8 @@ echo "dumping environment"
 env | sort
 
 sudo apt update
-sudo apt install cifs-utils samba-common samba winbind
+#sudo apt install cifs-utils samba-common samba winbind
+sudo apt install cifs-utils
 
 echo "Secure file is ${SECUREINFO_SECUREFILEPATH}"
 
