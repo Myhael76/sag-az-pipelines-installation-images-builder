@@ -26,6 +26,9 @@ if [ -z ${SAG_AZ_SA_NAME+x} ]; then
   exit 2
 fi
 
+echo "Trying az version..."
+az version
+
 echo "mounting the given file share"
 d=$(date +%y-%m-%dT%H.%M.%S_%3N)
 crtDay=$(date +%y-%m-%d)
@@ -36,7 +39,7 @@ mkdir -p /tmp/share $wd
 
 sudo mount -t cifs "$AZ_SMB_PATH" /tmp/share -o "username=$SAG_AZ_SA_NAME,password=$AZ_SM_SHARE_KEY,serverino"
 
-echo "Mounted"
+echo "Mounted, result $?"
 
 ls -lrt /mnt/share/*
 
