@@ -278,11 +278,13 @@ processTemplates(){
   done
 }
 
+processTemplates
+
 finally(){
   logI "Saving the audit"
   tar cvzf "$sd/sessions/$crtDay/s_$d.tgz" "${SUIF_AUDIT_BASE_DIR}"
   logI "Unmounting the shared images folder"
-  umount "$sd"
+  sudo umount "$sd"
   logI "Unmounted, result is $?"
 }
 finally
