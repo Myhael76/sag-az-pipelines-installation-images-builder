@@ -124,9 +124,9 @@ assureBinaries(){
 assureBinaries
 
 assureSUM(){
-  export SUM_HOME=/tmp/sumv11
-  mkdir -p "${SUM_HOME}"
-  bootstrapSum "${SUIF_PATCH_SUM_BOOSTSTRAP_BIN}" "" "${SUM_HOME}"
+  export SUIF_SUM_HOME=/tmp/sumv11
+  mkdir -p "${SUIF_SUM_HOME}"
+  bootstrapSum "${SUIF_PATCH_SUM_BOOSTSTRAP_BIN}" "" "${SUIF_SUM_HOME}"
 }
 assureSUM
 
@@ -254,7 +254,13 @@ generateProductsImageFromTemplate(){
   logI "Creating the product image ${lProductsImageFile}... "
   logD "Command is ${lCmd}"
   controlledExec "${lCmd}" "Create-products-image-for-template-${1//\//-}"
-  logI "Image ${lProductsImageFile} creation completed, result: $?"
+  resultCreateImage=$?
+  if [ "${resultCreateImage}" -ne 0 ]; then
+    logE "Error code ${resultCreateImage} while creating the product image"
+    cp "${lVolatileScriptFile}" "${SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY}/${1}/"
+  else
+    logI "Image ${lProductsImageFile} creation completed successfully"
+  fi
   rm -f "${lVolatileScriptFile}"
 
   logI "Uploading the products to the shared directory"
