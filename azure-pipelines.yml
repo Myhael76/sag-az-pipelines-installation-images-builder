@@ -2,13 +2,20 @@
 trigger: none
 # for production projects, the recommended trigger is peridical, once a week
 
+schedules:
+- cron: "0 12 * * 0"
+  displayName: Weekly Sunday build
+  branches:
+    include:
+    - main
+
 pool:
   name: GCC_MIUN_VMSS
   vmImage: Canonical:0001-com-ubuntu-confidential-vm-focal:20_04-lts-gen2:latest
 
 jobs:
 - job: downloadimages
-  displayName: 'Download Software AG Images for given template'
+  displayName: 'Download Software AG Images for given templates list'
   steps:
 
   - task: DownloadSecureFile@1
