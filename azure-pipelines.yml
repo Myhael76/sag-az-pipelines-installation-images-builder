@@ -6,19 +6,22 @@ pool:
   name: GCC_MIUN_VMSS
   vmImage: Canonical:0001-com-ubuntu-confidential-vm-focal:20_04-lts-gen2:latest
 
-steps:
+jobs:
+- job: downloadimages
+  displayName: 'Download Software AG Images for given template'
+  steps:
 
-- task: DownloadSecureFile@1
-  name: secureInfo
-  displayName: 'Download secure information'
-  inputs:
-    secureFile: 'secure.sh'
+  - task: DownloadSecureFile@1
+    name: secureInfo
+    displayName: 'Download secure information'
+    inputs:
+      secureFile: 'secure.sh'
 
-- script: |
-    echo "Dumping environment"
-    env | sort
-    echo "End nvironment dump"
-    echo "Running a repository script"
-    chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
-    ${BUILD_SOURCESDIRECTORY}/scripts/buildSagImages.sh
-  displayName: 'Generate Software AG image files'
+  - script: |
+      echo "Dumping environment"
+      env | sort
+      echo "End nvironment dump"
+      echo "Running a repository script"
+      chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
+      ${BUILD_SOURCESDIRECTORY}/scripts/buildSagImages.sh
+    displayName: 'Generate Software AG image files'

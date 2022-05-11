@@ -9,18 +9,20 @@ env | sort
 sudo apt update
 sudo apt install cifs-utils samba-common system-config-samba samba winbind
 
-echo "Secure file is $(secureInfo.secureFilePath)"
+echo "Secure file is $(SECUREINFO_SECUREFILEPATH)"
 
-if [ ! -f "$(secureInfo.secureFilePath)" ]; then
+if [ ! -f "$(SECUREINFO_SECUREFILEPATH)" ]; then
   echo "Secure file path not present"
 fi
 
 echo "Sourcing secure information..."
 
-. "$(secureInfo.secureFilePath)"
+. "$(SECUREINFO_SECUREFILEPATH)"
 
 echo "mounting the given file share"
 d=$(date +%y-%m-%dT%H.%M.%S_%3N)
+crtDay=$(date +%y-%m-%d)
+export SUIF_FIXES_DATE_TAG="$crtDay"
 wd=/tmp/work_$d
 
 mkdir -p /tmp/share $wd
