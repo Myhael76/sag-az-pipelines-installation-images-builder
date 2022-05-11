@@ -253,7 +253,6 @@ generateProductsImageFromTemplate(){
 
   logI "Creating the product image ${lProductsImageFile}... "
   logD "Command is ${lCmd}"
-  lCmd="${lCmd} '${SUIF_EMPOWER_PASSWORD}'"
   controlledExec "${lCmd}" "Create-products-image-for-template-${1//\//-}"
   resultCreateImage=$?
   if [ "${resultCreateImage}" -ne 0 ]; then
