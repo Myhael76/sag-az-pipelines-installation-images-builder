@@ -14,7 +14,8 @@ binDir="$sd/bin"
 installerSharedBin="$binDir/installer.bin"
 sumBootstrapSharedBin="$binDir/sum-bootstrap.bin"
 # templates is a space delimited list of SUIF templates to compute the images for"
-templates="UM/1011/RealmServer UM/1011/TemplateApplications MSR/1011/lean"
+# templates="UM/1011/RealmServer UM/1011/TemplateApplications MSR/1011/lean"
+templates="MSR/1011/lean"
 export SUIF_PRODUCT_IMAGES_PLATFORM="LNXAMD64"
 export SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY="/tmp/products"
 export SUIF_PRODUCT_IMAGES_SHARED_DIRECTORY="$sd/products"
@@ -200,8 +201,9 @@ generateFixesImageFromTemplate(){
 # Parameters
 # $1 -> setup template
 generateProductsImageFromTemplate(){
+  local lProductsSharedDir="${SUIF_PRODUCT_IMAGES_SHARED_DIRECTORY}/${1}"
   logI "Addressing products image for setup template ${1}..."
-  local lProductsSharedImageFile="${SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY}/${1}/products.zip"
+  local lProductsSharedImageFile="${lProductsSharedDir}/products.zip"
   if [ -f "${lProductsSharedImageFile}" ]; then
     logI "Products image for template ${1} already exists, nothing to do."
     return 0
@@ -265,8 +267,8 @@ generateProductsImageFromTemplate(){
   rm -f "${lVolatileScriptFile}"
 
   logI "Uploading the products to the shared directory"
-  mkdir -p "${SUIF_PRODUCT_IMAGES_SHARED_DIRECTORY}"
-  cp -r "${SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY}/${1}" "${SUIF_PRODUCT_IMAGES_SHARED_DIRECTORY}/"
+  mkdir -p "${lProductsSharedDir}"
+  cp -r "${SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY}/${1}"* "${lProductsSharedDir}/"
   logI "Products uploaded to the shared directory"
 }
 
