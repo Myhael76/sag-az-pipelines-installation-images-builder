@@ -7,7 +7,7 @@ echo "dumping environment"
 env | sort
 
 sudo apt update
-sudo apt install cifs-utils samba-common system-config-samba samba winbind
+sudo apt install cifs-utils samba-common samba winbind
 
 echo "Secure file is ${SECUREINFO_SECUREFILEPATH}"
 
@@ -37,7 +37,12 @@ wd=/tmp/work_$d
 
 mkdir -p /tmp/share $wd
 
-sudo mount -t cifs "$AZ_SMB_PATH" /tmp/share -o "username=$SAG_AZ_SA_NAME,password=$AZ_SM_SHARE_KEY,serverino"
+ls -lrt /tmp
+
+echo "AZ_SMB_PATH=$AZ_SMB_PATH"
+echo "SAG_AZ_SA_NAME=$SAG_AZ_SA_NAME"
+
+sudo mount -t cifs "$AZ_SMB_PATH" /tmp/share -o "vers=3.0,username=$SAG_AZ_SA_NAME,password=$AZ_SM_SHARE_KEY,dir_mode=0777,file_mode=0777"
 
 echo "Mounted, result $?"
 
