@@ -5,7 +5,7 @@ echo "DEBUG - dumping environment"
 env | sort
 
 # local variables
-SUIF_TAG="v.0.0.2-temp"
+SUIF_TAG="v.0.0.3-temp"
 d=$(date +%y-%m-%dT%H.%M.%S_%3N)
 crtDay=$(date +%y-%m-%d)
 wd="/tmp/work_$d" # our work directory
@@ -114,6 +114,7 @@ assureSUM(){
   mkdir -p "${SUM_HOME}"
   bootstrapSum "${SUIF_PATCH_SUM_BOOSTSTRAP_BIN}" "" "${SUM_HOME}"
 }
+assureSUM
 
 finally(){
   logI "Saving the audit"
