@@ -96,13 +96,13 @@ assureBinaries(){
   fi
 
   if [ -f "${sumBootstrapSharedBin}" ]; then
-    logI "Copying installer binary from the share"
+    logI "Copying sum bootstrap binary from the share"
     cp "${sumBootstrapSharedBin}" "${SUIF_PATCH_SUM_BOOSTSTRAP_BIN}"
     logI "Installer binary copied"
   else
     logI "Downloading default SUIF installer binary"
-      
-    logI "Copying installer binary to the share"
+    assureDefaultSumBoostrap
+    logI "Copying sum bootstrap to the share"
     cp "${SUIF_PATCH_SUM_BOOSTSTRAP_BIN}" "${sumBootstrapSharedBin}"
     logI "SUM Bootstrap binary copied, result $?"
   fi
@@ -119,7 +119,7 @@ finally(){
   logI "Saving the audit"
   tar cvzf "$sd/sessions/$crtDay/s_$d.tgz" "${SUIF_AUDIT_BASE_DIR}"
   logI "Unmounting the shared images folder"
-  unmount "$sd"
+  umount "$sd"
   logI "Unmounted, result is $?"
 }
 finally
