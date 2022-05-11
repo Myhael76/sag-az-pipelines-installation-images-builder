@@ -193,7 +193,7 @@ generateFixesImageFromTemplate(){
 
   logI "Uploading the fixes to the shared directory"
   mkdir -p "${lFixesSharedDir}"
-  cp -r "${lFixesDir}" "${lFixesSharedDir}"
+  cp -r "${lFixesDir}/*" "${lFixesSharedDir}/"
   logI "Fixes uploaded to the shared directory"
 }
 
@@ -235,8 +235,8 @@ generateProductsImageFromTemplate(){
   local lVolatileScriptFile="/dev/shm/SUIF/setup/templates/${1}/createProductImage.wmscript"
   mkdir -p "/dev/shm/SUIF/setup/templates/${1}/"
   cp "${lPermanentScriptFile}" "${lVolatileScriptFile}"
-  echo "Username=${SUIF_EMPOWER_USER}" >> "${lVolatileScriptFile}"
-  echo "Password=${SUIF_EMPOWER_PASSWORD}" >> "${lVolatileScriptFile}"
+  #echo "Username=${SUIF_EMPOWER_USER}" >> "${lVolatileScriptFile}"
+  #echo "Password=${SUIF_EMPOWER_PASSWORD}" >> "${lVolatileScriptFile}"
   logI "Volatile script created."
   ## TODO: check if error management enforcement is needed: what if the grep produced nothing?
 
@@ -251,12 +251,18 @@ generateProductsImageFromTemplate(){
   #explictly tell installer we are running unattended
   lCmd="${lCmd} -scriptErrorInteract no"
 
+  # TODO: these are new options documented for creating docker images from installer
+  lCmd="${lCmd} --username ${SUIF_EMPOWER_USER}"
+  lCmd="${lCmd} --password"
+
   logI "Creating the product image ${lProductsImageFile}... "
-  logD "Command is ${lCmd}"
+  logD "Command is ${lCmd} ***"
+  lCmd="${lCmd} '${SUIF_EMPOWER_PASSWORD}'"
   controlledExec "${lCmd}" "Create-products-image-for-template-${1//\//-}"
   resultCreateImage=$?
   if [ "${resultCreateImage}" -ne 0 ]; then
     logE "Error code ${resultCreateImage} while creating the product image"
+    logE "Empower user is ${SUIF_EMPOWER_USER}"
     cp "${lVolatileScriptFile}" "${SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY}/${1}/"
   else
     logI "Image ${lProductsImageFile} creation completed successfully"
@@ -264,8 +270,8 @@ generateProductsImageFromTemplate(){
   rm -f "${lVolatileScriptFile}"
 
   logI "Uploading the products to the shared directory"
-  mkdir -p "${SUIF_PRODUCT_IMAGES_SHARED_DIRECTORY}/${1}"
-  cp -r "${SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY}/${1}" "${SUIF_PRODUCT_IMAGES_SHARED_DIRECTORY}/${1}"
+  mkdir -p "${SUIF_PRODUCT_IMAGES_SHARED_DIRECTORY}"
+  cp -r "${SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY}/${1}" "${SUIF_PRODUCT_IMAGES_SHARED_DIRECTORY}/"
   logI "Products uploaded to the shared directory"
 }
 
