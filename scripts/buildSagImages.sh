@@ -193,7 +193,7 @@ generateFixesImageFromTemplate(){
 
   logI "Uploading the fixes to the shared directory"
   mkdir -p "${lFixesSharedDir}"
-  cp -r "${lFixesDir}/*" "${lFixesSharedDir}/"
+  cp -r "${lFixesDir}/"* "${lFixesSharedDir}/"
   logI "Fixes uploaded to the shared directory"
 }
 
