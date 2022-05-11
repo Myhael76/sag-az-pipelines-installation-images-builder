@@ -121,6 +121,8 @@ assureBinaries(){
     cp "${SUIF_PATCH_SUM_BOOSTSTRAP_BIN}" "${sumBootstrapSharedBin}"
     logI "SUM Bootstrap binary copied, result $?"
   fi
+  chmod u+x "${SUIF_INSTALL_INSTALLER_BIN}"
+  chmod u+x "${SUIF_PATCH_SUM_BOOSTSTRAP_BIN}"
 }
 assureBinaries
 
