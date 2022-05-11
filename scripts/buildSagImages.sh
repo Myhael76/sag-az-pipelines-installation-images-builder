@@ -270,7 +270,7 @@ generateProductsImageFromTemplate(){
 
   logI "Uploading the products to the shared directory"
   mkdir -p "${lProductsSharedDir}"
-  cp -r "${SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY}/${1}"* "${lProductsSharedDir}/"
+  cp -r "${SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY}/${1}/"* "${lProductsSharedDir}/"
   logI "Products uploaded to the shared directory"
 }
 
