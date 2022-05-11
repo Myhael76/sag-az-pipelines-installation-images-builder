@@ -69,6 +69,7 @@ fi
 
 mountImagesShare(){
   logI "Mounting the given file share"
+  mkdir -p "$sd"
   sudo mount -t cifs "$AZ_SMB_PATH" "$sd" -o "vers=3.0,username=$SAG_AZ_SA_NAME,password=$AZ_SM_SHARE_KEY,dir_mode=0777,file_mode=0777"
   resultMount=$?
   if [ $resultMount -ne 0 ]; then
