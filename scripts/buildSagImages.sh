@@ -70,7 +70,11 @@ fi
 mountImagesShare(){
   logI "Mounting the given file share"
   sudo mount -t cifs "$AZ_SMB_PATH" "$sd" -o "vers=3.0,username=$SAG_AZ_SA_NAME,password=$AZ_SM_SHARE_KEY,dir_mode=0777,file_mode=0777"
-  logI "Images share mounted, result $?"
+  resultMount=$?
+  if [ $resultMount -ne 0 ]; then
+    logE "Error mounting the images share, result $resultMount"
+    exit 4
+  fi
   logI "Creating work folder and assuring shared folders (${binDir})"
   mkdir -p "${binDir}" "$wd" "$sd/sessions/$crtDay"
   touch "${binDir}/lastMountTime"
@@ -96,7 +100,7 @@ assureBinaries(){
     logI "Installer binary copied"
   else
     logI "Downloading default SUIF installer binary"
-    assureDefaultSumBoostrap
+      
     logI "Copying installer binary to the share"
     cp "${SUIF_PATCH_SUM_BOOSTSTRAP_BIN}" "${sumBootstrapSharedBin}"
     logI "SUM Bootstrap binary copied, result $?"
@@ -113,6 +117,9 @@ assureSUM(){
 finally(){
   logI "Saving the audit"
   tar cvzf "$sd/sessions/$crtDay/s_$d.tgz" "${SUIF_AUDIT_BASE_DIR}"
+  logI "Unmounting the shared images folder"
+  unmount "$sd"
+  logI "Unmounted, result is $?"
 }
 finally
 # TODO: work in progress
