@@ -8,8 +8,8 @@ env | sort
 SUIF_TAG="v.0.0.2-temp"
 d=$(date +%y-%m-%dT%H.%M.%S_%3N)
 crtDay=$(date +%y-%m-%d)
-wd=/tmp/work_$d # our work directory
-sd=/tmp/share   # share directory - images
+wd="/tmp/work_$d" # our work directory
+sd="/tmp/share"   # share directory - images
 binDir="$sd/bin"
 installerSharedBin="$binDir/installer.bin"
 sumBootstrapSharedBin="$binDir/sum-bootstrap.bin"
@@ -73,6 +73,7 @@ mountImagesShare(){
   logI "Images share mounted, result $?"
   logI "Creating work folder and assuring shared folders (${binDir})"
   mkdir -p "${binDir}" "$wd" "$sd/sessions/$crtDay"
+  touch "${binDir}/lastMountTime"
 }
 mountImagesShare
 
@@ -86,10 +87,28 @@ assureBinaries(){
     assureDefaultInstaller
     logI "Copying installer binary to the share"
     cp "${SUIF_INSTALL_INSTALLER_BIN}" "${installerSharedBin}"
+    logI "Installer binary copied, result $?"
+  fi
+
+  if [ -f "${sumBootstrapSharedBin}" ]; then
+    logI "Copying installer binary from the share"
+    cp "${sumBootstrapSharedBin}" "${SUIF_PATCH_SUM_BOOSTSTRAP_BIN}"
     logI "Installer binary copied"
+  else
+    logI "Downloading default SUIF installer binary"
+    assureDefaultSumBoostrap
+    logI "Copying installer binary to the share"
+    cp "${SUIF_PATCH_SUM_BOOSTSTRAP_BIN}" "${sumBootstrapSharedBin}"
+    logI "SUM Bootstrap binary copied, result $?"
   fi
 }
 assureBinaries
+
+assureSUM(){
+  export SUM_HOME=/tmp/sumv11
+  mkdir -p "${SUM_HOME}"
+  bootstrapSum "${SUIF_PATCH_SUM_BOOSTSTRAP_BIN}" "" "${SUM_HOME}"
+}
 
 finally(){
   logI "Saving the audit"
