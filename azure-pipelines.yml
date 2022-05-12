@@ -18,6 +18,19 @@ jobs:
   displayName: 'Download Software AG Images for given templates list'
   steps:
 
+  - script: |
+      sudo apt update
+      #sudo apt install cifs-utils samba-common samba winbind
+      sudo apt install cifs-utils wget apt-transport-https software-properties-common
+      wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+      # Register the Microsoft repository GPG keys
+      sudo dpkg -i packages-microsoft-prod.deb
+      # Update the list of packages after we added packages.microsoft.com
+      sudo apt-get update
+      # Install PowerShell
+      sudo apt-get install -y powershell
+    displayName: 'System software preparation'
+
   - task: DownloadSecureFile@1
     name: secureInfo
     displayName: 'Download secure information'
@@ -25,10 +38,6 @@ jobs:
       secureFile: 'secure.sh'
 
   - script: |
-      echo "Dumping environment"
-      env | sort
-      echo "End nvironment dump"
-      echo "Running a repository script"
       chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
       ${BUILD_SOURCESDIRECTORY}/scripts/buildSagImages.sh
     displayName: 'Generate Software AG image files'

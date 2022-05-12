@@ -16,26 +16,26 @@ sumBootstrapSharedBin="$binDir/sum-bootstrap.bin"
 # templates is a space delimited list of SUIF templates to compute the images for"
 templates="UM/1011/RealmServer UM/1011/TemplateApplications MSR/1011/lean"
 # templates="MSR/1011/lean"
-export SUIF_PRODUCT_IMAGES_PLATFORM="LNXAMD64"
-export SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY="/tmp/products"
-export SUIF_PRODUCT_IMAGES_SHARED_DIRECTORY="$sd/products"
-export SUIF_FIX_IMAGES_OUTPUT_DIRECTORY="/tmp/fixes"
-export SUIF_FIX_IMAGES_SHARED_DIRECTORY="$sd/fixes"
 
-# exports for current job
-exports(){
-  export SUIF_FIXES_DATE_TAG="$crtDay"
+ob
+SUIF_exports(){
+  export SUIF_AUDIT_BASE_DIR=/tmp/SUIF_AUDIT
   export SUIF_DEBUG_ON=1
-  export SUIF_SDC_ONLINE_MODE=1 # tell SUIF we are downloading from SDC
-  # we'll work with local binaries, as the mount may have low IOPS
+  export SUIF_FIX_IMAGES_OUTPUT_DIRECTORY="/tmp/fixes"
+  export SUIF_FIX_IMAGES_SHARED_DIRECTORY="$sd/fixes"
+  export SUIF_FIXES_DATE_TAG="$crtDay"
+  export SUIF_HOME=/tmp/SUIF
   export SUIF_INSTALL_INSTALLER_BIN=/tmp/installer.bin
   export SUIF_PATCH_SUM_BOOSTSTRAP_BIN=/tmp/sum-bootstrap.bin
+  export SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY="/tmp/products"
+  export SUIF_PRODUCT_IMAGES_PLATFORM="LNXAMD64"
+  export SUIF_PRODUCT_IMAGES_SHARED_DIRECTORY="$sd/products"
+  export SUIF_SDC_ONLINE_MODE=1 # tell SUIF we are downloading from SDC
+  export SUIF_SUM_HOME=/tmp/sumv11
 }
-exports
+SUIF_exports
 
 getSUIF(){
-  export SUIF_HOME=/tmp/SUIF
-  export SUIF_AUDIT_BASE_DIR=/tmp/SUIF_AUDIT
   mkdir -p "${SUIF_HOME}" "${SUIF_AUDIT_BASE_DIR}"
   pushd .
   cd /tmp/SUIF
@@ -53,20 +53,20 @@ logI "SUIF cloned in folder ${SUIF_HOME} and sourced"
 logI "SUIF env after sourcing:"
 env | grep SUIF_ | sort
 
-updateMachine(){
-  logI "Updating machine base software..."
-  sudo apt update
-  #sudo apt install cifs-utils samba-common samba winbind
-  sudo apt install cifs-utils wget apt-transport-https software-properties-common
-  wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
-  # Register the Microsoft repository GPG keys
-  sudo dpkg -i packages-microsoft-prod.deb
-  # Update the list of packages after we added packages.microsoft.com
-  sudo apt-get update
-  # Install PowerShell
-  sudo apt-get install -y powershell
-}
-updateMachine
+# updateMachine(){
+#   logI "Updating machine base software..."
+#   sudo apt update
+#   #sudo apt install cifs-utils samba-common samba winbind
+#   sudo apt install cifs-utils wget apt-transport-https software-properties-common
+#   wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+#   # Register the Microsoft repository GPG keys
+#   sudo dpkg -i packages-microsoft-prod.deb
+#   # Update the list of packages after we added packages.microsoft.com
+#   sudo apt-get update
+#   # Install PowerShell
+#   sudo apt-get install -y powershell
+# }
+# updateMachine
 
 if [ ! -f "${SECUREINFO_SECUREFILEPATH}" ]; then
   echo "Secure file path not present: ${SECUREINFO_SECUREFILEPATH}"
@@ -127,7 +127,6 @@ assureBinaries(){
 assureBinaries
 
 assureSUM(){
-  export SUIF_SUM_HOME=/tmp/sumv11
   mkdir -p "${SUIF_SUM_HOME}"
   bootstrapSum "${SUIF_PATCH_SUM_BOOSTSTRAP_BIN}" "" "${SUIF_SUM_HOME}"
 }
