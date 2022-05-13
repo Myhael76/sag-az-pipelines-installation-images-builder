@@ -47,7 +47,7 @@ logI "Sourcing secure information..."
 chmod u+x "${SDCCREDENTIALS_SECUREFILEPATH}"
 . "${SDCCREDENTIALS_SECUREFILEPATH}"
 
-if [ -z ${SAG_AZ_SA_NAME+x} ]; then
+if [ -z ${SUIF_EMPOWER_USER+x} ]; then
   echo "Secure information has not been sourced correctly"
   exit 2
 fi
