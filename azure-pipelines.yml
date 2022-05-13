@@ -98,7 +98,7 @@ jobs:
   # umount SA share
   - script: |
       chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
-      . /scripts/setEnv.sh
+      . ${BUILD_SOURCESDIRECTORY}/scripts/setEnv.sh
 
       if [ -z ${MY_sd+x} ]; then
         echo "Secure information has not been sourced correctly"
@@ -106,3 +106,4 @@ jobs:
       fi
       sudo umount "$MY_sd"
     displayName: 'Unmount images share'
+    condition: always()
