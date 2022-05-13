@@ -73,6 +73,8 @@ jobs:
         logE "Error mounting the images share, result $resultMount"
         exit 4
       fi
+      echo "share contains:"
+      ls -lart "$MY_sd"
     displayName: 'Mount images share'
 
   # get SDC Credentials
@@ -84,8 +86,11 @@ jobs:
 
   # build images
   - script: |
-      export SUIF_TAG=$(SUIF_TAG)
-      export templates=$(templates)
+      echo "SUIF_TAG=$(SUIF_TAG)"
+      export SUIF_TAG="$(SUIF_TAG)"
+      export templates="$(templates)"
+      echo "share contains:"
+      ls -lart "$MY_sd"
       chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
       ${BUILD_SOURCESDIRECTORY}/scripts/buildSagImages.sh
     displayName: 'Generate Software AG image files'
