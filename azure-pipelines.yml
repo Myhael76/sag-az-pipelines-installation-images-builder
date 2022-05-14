@@ -86,11 +86,8 @@ jobs:
 
   # build images
   - script: |
-      echo "SUIF_TAG=$(SUIF_TAG)"
       export SUIF_TAG="$(SUIF_TAG)"
       export templates="$(templates)"
-      echo "share contains:"
-      ls -lart "$MY_sd"
       chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
       ${BUILD_SOURCESDIRECTORY}/scripts/buildSagImages.sh
     displayName: 'Generate Software AG image files'
