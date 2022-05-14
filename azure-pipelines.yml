@@ -14,11 +14,36 @@ pool:
   vmImage: Canonical:0001-com-ubuntu-confidential-vm-focal:20_04-lts-gen2:latest
 
 jobs:
+- job: assureresources
+  displayName: 'Assure azure resources'
+  
+  steps: 
+
+  - script: chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
+    displayName: Allow project scripts to execute
+
+  - task: AzureCLI@2
+    displayName: 'Temp'
+    inputs:
+      azureSubscription: 'GCC Sandbox Subscription Connection'
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: './scripts/checkAz.sh'
+
+
+  - script: exit 1
+    displayName: Force Exit during dev of this job...
+
 - job: downloadimages
   displayName: 'Download Software AG Images for given templates list'
   variables: 
   - group: SDC.Options
+  dependsOn: assureresources
+
   steps:
+
+  - script: chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
+    displayName: Allow project scripts to execute
 
   # update ubuntu machine
   - script: |
@@ -94,13 +119,7 @@ jobs:
 
   # umount SA share
   - script: |
-      chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
       . ${BUILD_SOURCESDIRECTORY}/scripts/setEnv.sh
-
-      if [ -z ${MY_sd+x} ]; then
-        echo "Secure information has not been sourced correctly"
-        exit 1
-      fi
       sudo umount "$MY_sd"
     displayName: 'Unmount images share'
     condition: always()
