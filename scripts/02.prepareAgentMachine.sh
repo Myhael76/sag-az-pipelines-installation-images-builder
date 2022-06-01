@@ -1,12 +1,6 @@
 #!/bin/bash
 
-. ${BUILD_SOURCESDIRECTORY}/scripts/setEnv.sh
-
-if [ ! -f ". ${SUIF_HOME}/01.scripts/commonFunctions.sh" ]; then
-  echo "SUIF not downloaded correctly!"
-  exit 1
-fi
-
+. "${BUILD_SOURCESDIRECTORY}/scripts/setEnv.sh"
 . "${SUIF_HOME}/01.scripts/commonFunctions.sh"
 
 logI "Updating OS software"
