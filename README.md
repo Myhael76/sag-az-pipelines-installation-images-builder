@@ -10,6 +10,7 @@ Use Azure Pipelines to build the product and fix images of chosen SUIF templates
     - [Create a New DevOps Project](#create-a-new-devops-project)
     - [Create an Agent Pool Using the Created VMSS](#create-an-agent-pool-using-the-created-vmss)
     - [Upload Secure Values by the means of a Secure File](#upload-secure-values-by-the-means-of-a-secure-file)
+    - [Create the Necessary Variable Group](#create-the-necessary-variable-group)
     - [Create a New Pipeline](#create-a-new-pipeline)
 
 ## Prerequisites
@@ -61,11 +62,22 @@ Version control is `Git`, Work item process `basic`.
 
 ### Upload Secure Values by the means of a Secure File
 
-- Copy `example.secure.sh` to `secure.sh`
+- Copy `example.sa.share.secrets.sh` to `sa.share.secrets.sh`
+- Copy `example.sdc.credentials.sh` to `sdc.credentials.sh`
 - Change the values according to your specific situation
 - In the "Pipelines" section of your DevOps project, go to "Library"
-- Select "Secure files" and upload `secure.sh`
+- Select "Secure files" and upload the two files you created above
 - Grant permission to the pipeline
+- You may delete the secure files from the local file system
+
+### Create the Necessary Variable Group
+
+- In the "Pipelines" section of your DevOps project, go to "Library"
+- Add a new variable group and call it "ProductImageBuild.Options"
+- Inside define the following variables
+  - `SUIF_DEBUG_ON` with a value of `0`
+  - `MY_SUIF_TAG` with a value of `main` or preferably the latest stable tag
+  - `MY_Templates` containing a space separated list of the SUIF templates for which the pipeline will build images. Example `UM/1011/RealmServer MSR/1011/lean MSR/1011/AdaptersSet1`
 
 ### Create a New Pipeline
 
