@@ -10,97 +10,69 @@ schedules:
     - main
 
 pool:
-  name: GCC_MIUN_VMSS
+  name: ImagesBuilderPool
   vmImage: Canonical:0001-com-ubuntu-confidential-vm-focal:20_04-lts-gen2:latest
 
-jobs:
-- job: downloadimages
-  displayName: 'Download Software AG Images for given templates list'
-  variables: 
-  - group: SDC.Options
-  steps:
+variables:
+  - group: ProductImageBuild.Options
 
-  # update ubuntu machine
-  - script: |
-      sudo apt update
-      #sudo apt install cifs-utils samba-common samba winbind
-      sudo apt install cifs-utils wget apt-transport-https software-properties-common
-      wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
-      # Register the Microsoft repository GPG keys
-      sudo dpkg -i packages-microsoft-prod.deb
-      # Update the list of packages after we added packages.microsoft.com
-      sudo apt-get update
-      # Install PowerShell
-      sudo apt-get install -y powershell
-    displayName: 'System software preparation'
+steps:
 
-  # get SA share secrets
-  - task: DownloadSecureFile@1
-    name: SASecureInfo
-    displayName: 'Download secure information for images share'
-    inputs:
-      secureFile: 'sa.share.secrets.sh'
+- script: chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
+  displayName: "Grant shell execution permissions"
 
-  # mount SA share
-  - script: |
-      if [ ! -f "${SASECUREINFO_SECUREFILEPATH}" ]; then
-        echo "Secure file path not present: ${SASECUREINFO_SECUREFILEPATH}"
-        exit 1
-      fi
+# get SUIF
+- script: |
+    export MY_SUIF_TAG=$(MY_SUIF_TAG)
+    ${BUILD_SOURCESDIRECTORY}/scripts/01.getSUIF.sh
+  displayName: 'Get SUIF'
 
-      echo "Sourcing secure information..."
-      chmod u+x "${SASECUREINFO_SECUREFILEPATH}"
-      . "${SASECUREINFO_SECUREFILEPATH}"
+# update ubuntu machine
+- script: ${BUILD_SOURCESDIRECTORY}/scripts/02.prepareAgentMachine.sh
+  displayName: 'System software preparation'
 
-      if [ -z ${SAG_AZ_SA_NAME+x} ]; then
-        echo "Secure information has not been sourced correctly"
-        exit 2
-      fi
+# get SA share secrets
+- task: DownloadSecureFile@1
+  name: SASecureInfo
+  displayName: 'Download secure information for images share'
+  inputs:
+    secureFile: 'SA.secrets.sh'
 
-      chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
-      . ${BUILD_SOURCESDIRECTORY}/scripts/setEnv.sh
+# mount SA share
+- script: ${BUILD_SOURCESDIRECTORY}/scripts/03.mountImagesShare.sh
+  displayName: 'Mount images share'
 
-      if [ -z ${MY_sd+x} ]; then
-        echo "Secure information has not been sourced correctly"
-        exit 3
-      fi
+# assure installation binaries
+- script: ${BUILD_SOURCESDIRECTORY}/scripts/04.assureInstallBinaries.sh
+  displayName: 'Assure installation binaries'
 
-      echo "Mounting the given file share"
-      mkdir -p "$MY_sd"
-      sudo mount -t cifs "$AZ_SMB_PATH" "$MY_sd" -o "vers=3.0,username=$SAG_AZ_SA_NAME,password=$AZ_SM_SHARE_KEY,dir_mode=0777,file_mode=0777"
-      resultMount=$?
-      if [ $resultMount -ne 0 ]; then
-        logE "Error mounting the images share, result $resultMount"
-        exit 4
-      fi
-      echo "share contains:"
-      ls -lart "$MY_sd"
-    displayName: 'Mount images share'
+# get SDC Credentials
+- task: DownloadSecureFile@1
+  name: SDCCredentials
+  displayName: 'Download SDC credentials'
+  inputs:
+    secureFile: 'sdc.credentials.sh'
 
-  # get SDC Credentials
-  - task: DownloadSecureFile@1
-    name: SDCCredentials
-    displayName: 'Download SDC credentials'
-    inputs:
-      secureFile: 'sdc.credentials.sh'
+# Boostrap Update Manager
+- script: ${BUILD_SOURCESDIRECTORY}/scripts/05.installSUM.sh
+  displayName: 'Install SUM'
 
-  # build images
-  - script: |
-      export SUIF_TAG="$(SUIF_TAG)"
-      export templates="$(templates)"
-      chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
-      ${BUILD_SOURCESDIRECTORY}/scripts/buildSagImages.sh
-    displayName: 'Generate Software AG image files'
+# umount SA share
+- script: |
+    export MY_SUIF_TAG=$(MY_SUIF_TAG)
+    export MY_templates=$(MY_templates)
+    export SUIF_DEBUG_ON=$(SUIF_DEBUG_ON)
+    ${BUILD_SOURCESDIRECTORY}/scripts/06.buildSagImages.sh
+  displayName: 'Build Images'
 
-  # umount SA share
-  - script: |
-      chmod u+x ${BUILD_SOURCESDIRECTORY}/scripts/*.sh
-      . ${BUILD_SOURCESDIRECTORY}/scripts/setEnv.sh
+# Save audit on share 
+# HINT: ou should use this step only for debug purposes
+# HINT: without this step the mount may be readonly
+- script: ${BUILD_SOURCESDIRECTORY}/scripts/11.saveAudit.sh
+  displayName: 'Save Audit on Share'
+  condition: always()
 
-      if [ -z ${MY_sd+x} ]; then
-        echo "Secure information has not been sourced correctly"
-        exit 1
-      fi
-      sudo umount "$MY_sd"
-    displayName: 'Unmount images share'
-    condition: always()
+# umount SA share
+- script: ${BUILD_SOURCESDIRECTORY}/scripts/12.unmountShare.sh
+  displayName: 'Unmount images share'
+  condition: always()
