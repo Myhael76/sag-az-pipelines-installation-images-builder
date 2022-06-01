@@ -55,6 +55,7 @@ processTemplate(){
       "${SUIF_PRODUCT_IMAGES_PLATFORM}"
     
     logI "Uploading products file to share"
+    mkdir -p "${lProductsSharedDir}"
     cp -r "${SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY}/${1}/"* "${lProductsSharedDir}/"
     logI "Uploaded products file to share"
   fi
@@ -81,6 +82,7 @@ processTemplate(){
     
     logI "Uploading fixes file to share"
     local lFixesDir="${SUIF_FIX_IMAGES_OUTPUT_DIRECTORY}/${1}/${SUIF_FIXES_DATE_TAG}"
+    mkdir -p "${lFixesSharedDir}"
     cp -r "${lFixesDir}/"* "${lFixesSharedDir}/"
     logI "Uploaded fixes file to share"
   fi
