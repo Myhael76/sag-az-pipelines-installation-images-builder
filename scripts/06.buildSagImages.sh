@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ${BUILD_SOURCESDIRECTORY}/scripts/setEnv.sh
+. "${BUILD_SOURCESDIRECTORY}/scripts/setEnv.sh"
 
 . "${SUIF_HOME}/01.scripts/commonFunctions.sh"
 . "${SUIF_HOME}/01.scripts/installation/setupFunctions.sh"
@@ -58,7 +58,7 @@ for template in $MY_templates; do
     "${SUIF_FIX_IMAGES_OUTPUT_DIRECTORY}" \
     "${SUIF_FIXES_DATE_TAG}" \
     "${SUIF_PRODUCT_IMAGES_PLATFORM}" \
-    "${SUIF_SUM_HOME}
+    "${SUIF_SUM_HOME}"
 
   logI "Template $template processed."
 done
