@@ -36,7 +36,7 @@ steps:
   name: SASecureInfo
   displayName: 'Download secure information for images share'
   inputs:
-    secureFile: 'SA.secrets.sh'
+    secureFile: 'sa.share.secrets.sh'
 
 # mount SA share
 - script: ${BUILD_SOURCESDIRECTORY}/scripts/03.mountImagesShare.sh
