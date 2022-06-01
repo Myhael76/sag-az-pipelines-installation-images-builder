@@ -28,37 +28,67 @@ mkdir -p \
   "$SUIF_FIX_IMAGES_OUTPUT_DIRECTORY" \
   "$SUIF_FIX_IMAGES_SHARED_DIRECTORY"
 
-for template in $MY_templates; do
+
+# Params:
+# $1 - Template ID
+processTemplate(){
   logI "Processing template ${template}..."
 
-  # Parameters
-  # $1 -> setup template
-  # $2 -> OPTIONAL - installer binary location, default /tmp/installer.bin
-  # $3 -> OPTIONAL - output folder, default /tmp/images/product
-  # $4 -> OPTIONAL - platform string, default LNXAMD64
-  # NOTE: default URLs for download are fit for Europe. Use the ones without "-hq" for Americas
-  # NOTE: pass SDC credentials in env variables SUIF_EMPOWER_USER and SUIF_EMPOWER_PASSWORD
-  # NOTE: /dev/shm/productsImagesList.txt may be created upfront if image caches are available
-  generateProductsImageFromTemplate \
-    "${template}" \
-    "${SUIF_INSTALL_INSTALLER_BIN}" \
-    "${SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY}" \
-    "${SUIF_PRODUCT_IMAGES_PLATFORM}"
-  
-  # TODO: generalize
-  # Parameters
-  # $1 -> setup template
-  # $2 -> OPTIONAL - output folder, default /tmp/images/product
-  # $3 -> OPTIONAL - fixes tag. Defaulted to current day
-  # $4 -> OPTIONAL - platform string, default LNXAMD64
-  # $5 -> OPTIONAL - sum home, default /tmp/sumv11
-  # $6 -> OPTIONAL - sum-bootstrap binary location, default /tmp/sum-bootstrap.bin
-  # NOTE: pass SDC credentials in env variables SUIF_EMPOWER_USER and SUIF_EMPOWER_PASSWORD
-  generateFixesImageFromTemplate "${template}" \
-    "${SUIF_FIX_IMAGES_OUTPUT_DIRECTORY}" \
-    "${SUIF_FIXES_DATE_TAG}" \
-    "${SUIF_PRODUCT_IMAGES_PLATFORM}" \
-    "${SUIF_SUM_HOME}"
+  local lProductsSharedDir="${SUIF_PRODUCT_IMAGES_SHARED_DIRECTORY}/${1}"
+  local lProductsSharedImageFile="${lProductsSharedDir}/products.zip"
+
+  if [ -f "${lProductsSharedImageFile}" ]; then
+    logI "Products image for template ${1} already exists, nothing to do."
+  else
+    # Parameters
+    # $1 -> setup template
+    # $2 -> OPTIONAL - installer binary location, default /tmp/installer.bin
+    # $3 -> OPTIONAL - output folder, default /tmp/images/product
+    # $4 -> OPTIONAL - platform string, default LNXAMD64
+    # NOTE: default URLs for download are fit for Europe. Use the ones without "-hq" for Americas
+    # NOTE: pass SDC credentials in env variables SUIF_EMPOWER_USER and SUIF_EMPOWER_PASSWORD
+    # NOTE: /dev/shm/productsImagesList.txt may be created upfront if image caches are available
+    generateProductsImageFromTemplate \
+      "${template}" \
+      "${SUIF_INSTALL_INSTALLER_BIN}" \
+      "${SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY}" \
+      "${SUIF_PRODUCT_IMAGES_PLATFORM}"
+    
+    logI "Uploading products file to share"
+    cp -r "${SUIF_PRODUCT_IMAGES_OUTPUT_DIRECTORY}/${1}/"* "${lProductsSharedDir}/"
+    logI "Uploaded products file to share"
+  fi
+
+  local lFixesSharedDir="${SUIF_FIX_IMAGES_SHARED_DIRECTORY}/${1}/${SUIF_FIXES_DATE_TAG}"
+  local lFixesSharedImageFile="${lFixesSharedDir}/fixes.zip"
+  if [ -f "${lFixesSharedImageFile}" ]; then
+    logI "Fixes image for template ${1} and tag ${SUIF_FIXES_DATE_TAG} already exists, nothing to do."
+  else
+    # TODO: generalize
+    # Parameters
+    # $1 -> setup template
+    # $2 -> OPTIONAL - output folder, default /tmp/images/product
+    # $3 -> OPTIONAL - fixes tag. Defaulted to current day
+    # $4 -> OPTIONAL - platform string, default LNXAMD64
+    # $5 -> OPTIONAL - sum home, default /tmp/sumv11
+    # $6 -> OPTIONAL - sum-bootstrap binary location, default /tmp/sum-bootstrap.bin
+    # NOTE: pass SDC credentials in env variables SUIF_EMPOWER_USER and SUIF_EMPOWER_PASSWORD
+    generateFixesImageFromTemplate "${template}" \
+      "${SUIF_FIX_IMAGES_OUTPUT_DIRECTORY}" \
+      "${SUIF_FIXES_DATE_TAG}" \
+      "${SUIF_PRODUCT_IMAGES_PLATFORM}" \
+      "${SUIF_SUM_HOME}"
+    
+    logI "Uploading fixes file to share"
+    local lFixesDir="${SUIF_FIX_IMAGES_OUTPUT_DIRECTORY}/${1}/${SUIF_FIXES_DATE_TAG}"
+    cp -r "${lFixesDir}/"* "${lFixesSharedDir}/"
+    logI "Uploaded fixes file to share"
+  fi
+
 
   logI "Template $template processed."
+}
+
+for template in $MY_templates; do
+  processTemplate "${template}"
 done
