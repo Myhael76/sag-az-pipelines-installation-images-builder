@@ -23,7 +23,7 @@ steps:
 
 # get SUIF
 - script: |
-    export MY_SUIF_TAG=$(MY_SUIF_TAG)
+    export MY_SUIF_TAG="$(MY_SUIF_TAG)"
     ${BUILD_SOURCESDIRECTORY}/scripts/01.getSUIF.sh
   displayName: 'Get SUIF'
 
@@ -59,9 +59,9 @@ steps:
 
 # umount SA share
 - script: |
-    export MY_SUIF_TAG=$(MY_SUIF_TAG)
-    export MY_templates=$(MY_templates)
-    export SUIF_DEBUG_ON=$(SUIF_DEBUG_ON)
+    export MY_SUIF_TAG="$(MY_SUIF_TAG)"
+    export MY_templates="$(MY_templates)"
+    export SUIF_DEBUG_ON="$(SUIF_DEBUG_ON)"
     ${BUILD_SOURCESDIRECTORY}/scripts/06.buildSagImages.sh
   displayName: 'Build Images'
 
