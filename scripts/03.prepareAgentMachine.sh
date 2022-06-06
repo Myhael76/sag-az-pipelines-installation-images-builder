@@ -5,8 +5,9 @@
 
 logI "Updating OS software"
 sudo apt update
+
 logI "Installing required libraries"
-sudo apt install cifs-utils wget apt-transport-https software-properties-common
+sudo apt install -y cifs-utils wget apt-transport-https software-properties-common
 logI "Installing powershell"
 wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
 # Register the Microsoft repository GPG keys
