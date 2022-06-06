@@ -5,7 +5,6 @@
 
 logI "Updating OS software"
 sudo apt update
-#sudo apt install cifs-utils samba-common samba winbind
 logI "Installing required libraries"
 sudo apt install cifs-utils wget apt-transport-https software-properties-common
 logI "Installing powershell"

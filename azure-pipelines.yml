@@ -27,10 +27,6 @@ steps:
     ${BUILD_SOURCESDIRECTORY}/scripts/01.getSUIF.sh
   displayName: 'Get SUIF'
 
-# update ubuntu machine
-- script: ${BUILD_SOURCESDIRECTORY}/scripts/02.prepareAgentMachine.sh
-  displayName: 'System software preparation'
-
 # get SA share secrets
 - task: DownloadSecureFile@1
   name: SASecureInfo
@@ -39,8 +35,12 @@ steps:
     secureFile: 'sa.share.secrets.sh'
 
 # mount SA share
-- script: ${BUILD_SOURCESDIRECTORY}/scripts/03.mountImagesShare.sh
+- script: ${BUILD_SOURCESDIRECTORY}/scripts/02.mountImagesShare.sh
   displayName: 'Mount images share'
+
+# update ubuntu machine
+- script: ${BUILD_SOURCESDIRECTORY}/scripts/03.prepareAgentMachine.sh
+  displayName: 'System software preparation'
 
 # assure installation binaries
 - script: ${BUILD_SOURCESDIRECTORY}/scripts/04.assureInstallBinaries.sh
