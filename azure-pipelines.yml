@@ -57,7 +57,7 @@ steps:
 - script: ${BUILD_SOURCESDIRECTORY}/scripts/05.installSUM.sh
   displayName: 'Install SUM'
 
-# umount SA share
+# Build Images
 - script: |
     export MY_SUIF_TAG="$(MY_SUIF_TAG)"
     export MY_templates="$(MY_templates)"
@@ -66,8 +66,6 @@ steps:
   displayName: 'Build Images'
 
 # Save audit on share 
-# HINT: ou should use this step only for debug purposes
-# HINT: without this step the mount may be readonly
 - script: ${BUILD_SOURCESDIRECTORY}/scripts/11.saveAudit.sh
   displayName: 'Save Audit on Share'
   condition: always()
